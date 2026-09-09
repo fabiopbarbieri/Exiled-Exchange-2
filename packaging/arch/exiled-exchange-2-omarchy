@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+# Keep the upstream AppImage profile intact, regardless of Electron's app name.
+profile="${XDG_CONFIG_HOME:-$HOME/.config}/exiled-exchange-2-omarchy"
+exec /opt/exiled-exchange-2-omarchy/exiled-exchange-2-omarchy \
+  "$@" --ozone-platform=x11 --no-updates --user-data-dir="$profile"

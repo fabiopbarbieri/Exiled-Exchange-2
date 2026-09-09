@@ -1,0 +1,10 @@
+extends: ./electron-builder.yml
+appId: local.exiledexchange2.omarchy
+productName: Exiled Exchange 2 (Omarchy)
+publish: null
+extraMetadata:
+  name: exiled-exchange-2-omarchy
+  productName: Exiled Exchange 2 (Omarchy)
+  main: main.js
+linux:
+  executableName: exiled-exchange-2-omarchy
