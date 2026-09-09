@@ -1,5 +1,12 @@
 # How this works
 
+## Portable local configuration
+
+Keep local build instructions and packaging independent of personal usernames
+and home directories. Use `$HOME`, `~`, XDG variables or paths relative to the
+repository. Use neutral application identifiers instead of personal account
+names. The Git remote remains the source of truth for the fork location.
+
 There are 2 main parts of the app:
 
 1. renderer: this is the HTML/Javascript-based UI rendered within the Electron container. This runs Vue.js, a React-like Javascript framework for rendering front-end.

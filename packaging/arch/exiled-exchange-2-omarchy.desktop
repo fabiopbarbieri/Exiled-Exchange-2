@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Exiled Exchange 2 (Omarchy)
+Comment=Consulta de preços do Path of Exile 2 — fork local
+Exec=exiled-exchange-2-omarchy
+Terminal=false
+Type=Application
+Icon=exiled-exchange-2-omarchy
+StartupWMClass=exiled-exchange-2-omarchy
+Categories=Game;

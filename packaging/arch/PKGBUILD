@@ -1,0 +1,50 @@
+# Generated source checksum/version are filled by build.sh into an isolated copy.
+pkgname=exiled-exchange-2-omarchy
+pkgver=@VERSION@
+pkgrel=2
+pkgdesc='Path of Exile 2 price checker — local Omarchy fork'
+arch=('x86_64')
+url='https://github.com/Kvan7/Exiled-Exchange-2'
+license=('MIT')
+depends=('alsa-lib' 'at-spi2-core' 'cairo' 'dbus' 'expat' 'gcc-libs'
+         'glib2' 'glibc' 'gtk3' 'libcups' 'libdrm' 'libx11' 'libxcb'
+         'libxcomposite' 'libxdamage' 'libxext' 'libxfixes' 'libxkbcommon'
+         'libxrandr' 'libxt' 'libxtst' 'mesa' 'nspr' 'nss' 'pango')
+# Node 24 and npm are provided by the caller, including mise installations.
+# The explicit check below avoids replacing the user's global Node packages.
+options=('!strip' '!debug')
+source=('source.tar.gz')
+sha256sums=('@SHA256@')
+
+build() {
+  [[ $(node -p 'process.versions.node.split(".")[0]') == 24 ]] || {
+    error 'Node 24 must be on PATH'; return 1;
+  }
+  cd "$srcdir/source/renderer"
+  npm ci --no-audit --no-fund
+  npm run make-index-files
+  npm run lint
+  npm run build
+  cd ../main
+  npm ci --no-audit --no-fund
+  npm run build
+  npm run package -- --config ../packaging/arch/electron-builder.yml --linux --dir --publish never
+}
+
+check() {
+  cd "$srcdir/source/renderer"
+  npm run test -- --run
+}
+
+package() {
+  cd "$srcdir/source"
+  install -d "$pkgdir/opt/$pkgname"
+  cp -a main/dist/linux-unpacked/. "$pkgdir/opt/$pkgname/"
+  # Pacman owns updates. No feed is shipped, including the upstream feed.
+  rm -f "$pkgdir/opt/$pkgname/resources/app-update.yml"
+  install -Dm755 "packaging/arch/$pkgname" "$pkgdir/usr/bin/$pkgname"
+  install -Dm644 "packaging/arch/$pkgname.desktop" "$pkgdir/usr/share/applications/$pkgname.desktop"
+  install -Dm644 main/build/icons/256x256.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/$pkgname.png"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 "$srcdir/../provenance.txt" "$pkgdir/usr/share/doc/$pkgname/provenance.txt"
+}
